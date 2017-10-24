@@ -212,6 +212,14 @@ def prepare_wmt_data(data_dir, tmp_dir):
         utils.prepare_data(data_dir, tmp_dir, _UN_TRAIN_DATASETS,
             "train.tok")
 
+    # prepare dev dataset if it isn't already available
+    dev_corpus_paths = [os.path.join(data_dir, "dev.tok.%s" % lang) for lang in ["zh", "en"]]    
+    if not utils.do_files_exist(dev_corpus_paths):
+        # news commentary
+        tf.logging.info("[prepare_wmt_data] preparing News Commentary dev dataset")
+        utils.prepare_data(data_dir, tmp_dir, _ZHEN_TEST_DATASETS, 
+            "dev.tok")
+
                 
                 
 # combined training dataset
