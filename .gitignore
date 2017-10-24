@@ -1,0 +1,37 @@
+# Compiled python modules.
+*.pyc
+
+# Byte-compiled
+_pycache__/
+
+# Python egg metadata, regenerated from source files by setuptools.
+/*.egg-info
+
+# PyPI distribution artifacts.
+build/
+dist/
+
+.idea
+
+# jupyter
+.ipynb
+.ipynb_checkpoints/
+
+notebooks/*.pickle
+
+# download and training
+data
+train
+tmp
+decode
+data_translate_enzh_wmt8k
+data_challenger_new
+data_translate_enzh_wmt8k_default_rev
+
+bleu_on_valid/ouput/*
+
+# Sublime project files
+*.sublime-project
+*.sublime-workspace
+
+.DS_Store
