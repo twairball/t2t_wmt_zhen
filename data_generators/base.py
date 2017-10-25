@@ -36,16 +36,16 @@ class TranslateEnzhWmtBase(TranslateProblem):
     """WMT17 Zh-En translation. No additional preprocessing done."""
 
     @property
-    def vocab_size(self):
+    def targeted_vocab_size(self):
         return 2**15  # 32k
 
     @property
     def source_vocab_name(self):
-        return "vocab.zhen-zh.%d" % self.vocab_size
+        return "vocab.zhen-zh.%d" % self.targeted_vocab_size
 
     @property
     def target_vocab_name(self):
-        return "vocab.zhen-en.%d" % self.vocab_size
+        return "vocab.zhen-en.%d" % self.targeted_vocab_size
 
     @property
     def input_space_id(self):

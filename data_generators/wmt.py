@@ -172,12 +172,27 @@ class TranslateEnzhWmt(TranslateProblem):
         }
 
 @registry.register_problem
-class TranslateEnzhWmtPP(TranslateEnzhWmt):
+class TranslateEnzhWmtSm(TranslateEnzhWmt):
+
+    @property
+    def vocab_size(self):
+        return 2**13  # 8k
+
+
+@registry.register_problem
+class TranslateEnzhWmtPreproc(TranslateEnzhWmt):
     """WMT17 Zh-En translation, with additional preprocessing. """
 
     def prepare(self, data_dir, tmp_dir):
         # custom pipeline for preparing WMT dataset
         prepare_wmt_data_addtl_preproc(data_dir, tmp_dir)
+
+@registry.register_problem
+class TranslateEnzhWmtPreprocSm(TranslateEnzhWmtPreproc):
+    
+    @property
+    def vocab_size(self):
+        return 2**13  # 8k
 
 
 
