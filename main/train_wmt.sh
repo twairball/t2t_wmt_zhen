@@ -5,7 +5,6 @@ mkdir -p ./data/wmt
 mkdir -p ./train/wmt
 t2t-trainer \
   --t2t_usr_dir=./data_generators \
-  --generate_data \
   --data_dir=./data/wmt \
   --problems=translate_enzh_wmt \
   --model=transformer \
