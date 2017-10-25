@@ -56,9 +56,9 @@ class TranslateEnzhWmtBase(TranslateProblem):
         return problem.SpaceID.ZH_TOK
 
     def generator(self, data_dir, tmp_dir, train):
-        datasets = _ZHEN_TRAIN_DATASETS if train else _ZHEN_TEST_DATASETS
-        source_datasets = [[item[0], [item[1][0]]] for item in _ZHEN_TRAIN_DATASETS]
-        target_datasets = [[item[0], [item[1][1]]] for item in _ZHEN_TRAIN_DATASETS]
+        datasets = _ZHEN_TRAIN_FULL_DATASETS if train else _ZHEN_TEST_DATASETS
+        source_datasets = [[item[0], [item[1][0]]] for item in _ZHEN_TRAIN_FULL_DATASETS]
+        target_datasets = [[item[0], [item[1][1]]] for item in _ZHEN_TRAIN_FULL_DATASETS]
         source_vocab = generator_utils.get_or_generate_vocab(
             data_dir, tmp_dir, self.source_vocab_name, self.targeted_vocab_size,
             source_datasets)
