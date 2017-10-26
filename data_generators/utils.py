@@ -30,6 +30,17 @@ def _preprocess(line, is_zh=False):
 
     return line
 
+def hybridSplit(str):
+    """ Hybrid split for English/Chinese. 
+    E.g. 
+        hybridSplit("女人喜欢Louis Vuitton, Hermes")
+        =>  ['女人喜欢', 'Louis', 'Vuitton', 'Hermes']
+    
+    TODO: fix bug that removes punctuation
+    """
+    regex = r"[\u4e00-\ufaff]+|[0-9]+|[a-zA-Z]+\'*[a-z]*"
+    matches = re.findall(regex, str, re.UNICODE)
+    return matches
 
 def _clean_parallel(src_path, ref_path):
     """clean parallel corpus
@@ -184,6 +195,11 @@ def bi_vocabs_token_generator(source_path,
     the same number of lines and yields dictionaries of "inputs" and "targets"
     where inputs are token ids from the " "-split source (and target, resp.) lines
     converted to integers using the token_map.
+
+    * 
+      This generator differs from tensor2tensor.translate.bi_vocabs_token_generator
+      It adds additional logging and saves from tokenizer exceptions 
+    *
 
     Args:
     source_path: path to the file with source sentences.

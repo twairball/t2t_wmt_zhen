@@ -171,13 +171,6 @@ class TranslateEnzhWmt(TranslateProblem):
             "targets": target_token,
         }
 
-@registry.register_problem
-class TranslateEnzhWmtSm(TranslateEnzhWmt):
-
-    @property
-    def vocab_size(self):
-        return 2**13  # 8k
-
 
 @registry.register_problem
 class TranslateEnzhWmtPreproc(TranslateEnzhWmt):
@@ -187,14 +180,6 @@ class TranslateEnzhWmtPreproc(TranslateEnzhWmt):
         # custom pipeline for preparing WMT dataset
         prepare_wmt_data_addtl_preproc(data_dir, tmp_dir)
 
-@registry.register_problem
-class TranslateEnzhWmtPreprocSm(TranslateEnzhWmtPreproc):
-    
-    @property
-    def vocab_size(self):
-        return 2**13  # 8k
-
-
 
 ##
 ## Preprocessing
@@ -202,7 +187,7 @@ class TranslateEnzhWmtPreprocSm(TranslateEnzhWmtPreproc):
 
 def prepare_wmt_data(data_dir, tmp_dir):
     """ Prepare datasets for WMT17 ZH-EN.
-    Download and preprocesses datasets if not cached on disk.     
+    Download and preprocesses datasets if not cached on disk.   
     Then append additional parallel corpus from CWMT to training.
     This preprocessing uses jieba tokenizer for Chinese corpus 
     """
