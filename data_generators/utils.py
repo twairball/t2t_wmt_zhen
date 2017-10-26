@@ -1,6 +1,8 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 """
 Adaptation of tensor2tensor/data_generators/generator_utils.py
-
 """
 import tensorflow as tf
 import os
