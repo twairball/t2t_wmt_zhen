@@ -113,6 +113,7 @@ def get_or_generate_vocab(data_dir,
                           vocab_filename,
                           vocab_size,
                           dataset_filename,
+                          _file_byte_budget=1e6,
                           num_iterations=1e3):
     """Generate a vocabulary from dataset_filename.
 
@@ -131,7 +132,7 @@ def get_or_generate_vocab(data_dir,
         filepath = os.path.join(data_dir, dataset_filename)
         # Use Tokenizer to count the word occurrences.
         with tf.gfile.GFile(filepath, mode="r") as source_file:
-            file_byte_budget = 1e6
+            file_byte_budget = _file_byte_budget
             counter = 0
             countermax = int(source_file.size() / file_byte_budget / 2)
             for line in source_file:
@@ -153,6 +154,9 @@ def get_or_generate_vocab_inner(data_dir, vocab_filename, vocab_size,
                                 generator, num_iterations=1e3):
     """Inner implementation for vocab generators.
 
+    *
+        has minimum token count set to 50. 
+    *
     Args:
         data_dir: The base directory where data and vocab files are stored. If None,
             then do not save the vocab even if it doesn't exist.
@@ -180,7 +184,7 @@ def get_or_generate_vocab_inner(data_dir, vocab_filename, vocab_size,
             token_counts[tok] += 1
 
     vocab = text_encoder.SubwordTextEncoder.build_to_target_size(
-        vocab_size, token_counts, 1, 1e3, int(num_iterations))
+        vocab_size, token_counts, 50, 1e3, int(num_iterations))
 
     if vocab_filepath is not None:
         vocab.store_to_file(vocab_filepath)
