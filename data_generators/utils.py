@@ -113,13 +113,16 @@ def get_or_generate_vocab(data_dir,
                           vocab_filename,
                           vocab_size,
                           dataset_filename,
-                          _file_byte_budget=1e6,
-                          num_iterations=1e3):
+                          _file_byte_budget=5e9,
+                          num_iterations=4):
     """Generate a vocabulary from dataset_filename.
 
-    This generator differs from generator_utils.get_or_generate_vocab in that reads from 
-    a single preprocessed dataset. 
+    *
+        This generator differs from generator_utils.get_or_generate_vocab in that reads from 
+        a single preprocessed dataset. 
 
+        Uses file_byte_budget 5e9 default, which gets ~ 32k vocab
+    *
     Args: 
         data_dir: The base directory where data and vocab files are stored. 
         vocab_filename: relative filename where vocab file is stored
