@@ -104,7 +104,7 @@ class TranslateEnzhWmt(TranslateProblem):
 
     @property
     def vocab_size(self):
-        return 2**15  # 32k
+        return 50000
 
     @property
     def source_vocab_filename(self):
@@ -127,11 +127,11 @@ class TranslateEnzhWmt(TranslateProblem):
     ## 
     def get_source_vocab(self, data_dir):
         return utils.get_or_generate_vocab(data_dir, self.source_vocab_filename,
-            self.vocab_size, "train.tok.en", num_iterations=4)
+            self.vocab_size, "train.tok.en", _file_byte_budget=5e8, num_iterations=4)
 
     def get_target_vocab(self, data_dir):
         return utils.get_or_generate_vocab(data_dir, self.target_vocab_filename,
-            self.vocab_size, "train.tok.zh", num_iterations=4)
+            self.vocab_size, "train.tok.zh", _file_byte_budget=5e8, num_iterations=4)
     
     ##
     ## generators and stuff
