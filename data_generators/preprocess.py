@@ -1,6 +1,6 @@
-
 import os
 import random
+import io
 from . import utils
 import tensorflow as tf
 
