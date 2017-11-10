@@ -80,6 +80,6 @@ $TOOLS/chi_char_segment.pl -t xml < $REF_FILE.sgm > $REF_FILE.seg.sgm
 
 # calculate BLEU score
 echo "Calculating BLEU score: ${HYP_FILE}.bleu.log"
-$TOOLS/mteval-v11b.pl -s $SRC_FILE.sgm -r $REF_FILE.seg.sgm -t $HYP_FILE.seg.sgm -c > $HYP_FILE.bleu.log
+$TOOLS/mteval-v13a.pl -s $SRC_FILE.sgm -r $REF_FILE.seg.sgm -t $HYP_FILE.seg.sgm -c > $HYP_FILE.bleu.log
 
 
