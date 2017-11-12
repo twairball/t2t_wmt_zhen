@@ -36,7 +36,7 @@ _UN_TRAIN_DATASETS = [[
 # datum2015:  1,000,003 lines
 # datum2017: 1,999,968 lines
 # NEU2017:  2,000,000 lines 
-_CWMT_TRAIN_DATASETS = [
+_CWMT_TRAIN_A_DATASETS = [
     [
         "https://s3-us-west-2.amazonaws.com/twairball.wmt17.zh-en/cwmt.tgz",
         [
@@ -48,26 +48,6 @@ _CWMT_TRAIN_DATASETS = [
             "cwmt/neu2017/NEU_en.txt",
             "cwmt/datum2015/datum_ch.txt",
             "cwmt/datum2015/datum_en.txt",
-            "cwmt/datum2017/Book1_cn.txt",
-            "cwmt/datum2017/Book1_en.txt",
-            "cwmt/datum2017/Book2_cn.txt",
-            "cwmt/datum2017/Book2_en.txt",
-            "cwmt/datum2017/Book3_cn.txt",
-            "cwmt/datum2017/Book3_en.txt",
-            "cwmt/datum2017/Book4_cn.txt",
-            "cwmt/datum2017/Book4_en.txt",
-            "cwmt/datum2017/Book5_cn.txt",
-            "cwmt/datum2017/Book5_en.txt",
-            "cwmt/datum2017/Book6_cn.txt",
-            "cwmt/datum2017/Book6_en.txt",
-            "cwmt/datum2017/Book7_cn.txt",
-            "cwmt/datum2017/Book7_en.txt",
-            "cwmt/datum2017/Book8_cn.txt",
-            "cwmt/datum2017/Book8_en.txt",
-            "cwmt/datum2017/Book9_cn.txt",
-            "cwmt/datum2017/Book9_en.txt",
-            "cwmt/datum2017/Book10_cn.txt",
-            "cwmt/datum2017/Book10_en.txt",
             "cwmt/datum2017/Book11_cn.txt",
             "cwmt/datum2017/Book11_en.txt",
             "cwmt/datum2017/Book12_cn.txt",
@@ -88,6 +68,35 @@ _CWMT_TRAIN_DATASETS = [
             "cwmt/datum2017/Book19_en.txt",
             "cwmt/datum2017/Book20_cn.txt",
             "cwmt/datum2017/Book20_en.txt"
+        ]
+    ]
+]
+
+# CWMT_TRAIN_B contains books 1-10 which are already jieba segmented. 
+_CWMT_TRAIN_B_DATASETS= [
+    [
+        "https://s3-us-west-2.amazonaws.com/twairball.wmt17.zh-en/cwmt.tgz",
+        [
+            "cwmt/datum2017/Book1_cn.txt",
+            "cwmt/datum2017/Book1_en.txt",
+            "cwmt/datum2017/Book2_cn.txt",
+            "cwmt/datum2017/Book2_en.txt",
+            "cwmt/datum2017/Book3_cn.txt",
+            "cwmt/datum2017/Book3_en.txt",
+            "cwmt/datum2017/Book4_cn.txt",
+            "cwmt/datum2017/Book4_en.txt",
+            "cwmt/datum2017/Book5_cn.txt",
+            "cwmt/datum2017/Book5_en.txt",
+            "cwmt/datum2017/Book6_cn.txt",
+            "cwmt/datum2017/Book6_en.txt",
+            "cwmt/datum2017/Book7_cn.txt",
+            "cwmt/datum2017/Book7_en.txt",
+            "cwmt/datum2017/Book8_cn.txt",
+            "cwmt/datum2017/Book8_en.txt",
+            "cwmt/datum2017/Book9_cn.txt",
+            "cwmt/datum2017/Book9_en.txt",
+            "cwmt/datum2017/Book10_cn.txt",
+            "cwmt/datum2017/Book10_en.txt",
         ]
     ]
 ]
@@ -201,9 +210,13 @@ def prepare_wmt_data(data_dir, tmp_dir):
             "train.tok")
 
         # append additional training data using cwmt corpuses
-        tf.logging.info("[prepare_wmt_data] appending CWMT datasets")
-        utils.prepare_data(data_dir, tmp_dir, _CWMT_TRAIN_DATASETS,
+        tf.logging.info("[prepare_wmt_data] appending CWMT A datasets")
+        utils.prepare_data(data_dir, tmp_dir, _CWMT_TRAIN_A_DATASETS,
             "train.tok")
+
+        tf.logging.info("[prepare_wmt_data] appending CWMT B datasets")
+        utils.prepare_data(data_dir, tmp_dir, _CWMT_TRAIN_B_DATASETS,
+            "train.tok", use_jieba=False)
 
         # append additional training data using UN parallel corpuses
         tf.logging.info("[prepare_wmt_data] appending UN parallel datasets")

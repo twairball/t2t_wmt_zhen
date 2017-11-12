@@ -64,7 +64,7 @@ def get_lang(filename):
     else:
         return filename.split('.')[-1]
 
-def prepare_data(data_dir, tmp_dir, sources, out_filename="train.tok"):
+def prepare_data(data_dir, tmp_dir, sources, out_filename="train.tok", use_jieba=True):
     """Preprocess dataset. Download, unarchive and preprocess. 
     Skips processing if file exists. 
     Writes to e.g. /data/t2t_datagen/train.tok.en
@@ -104,6 +104,7 @@ def prepare_data(data_dir, tmp_dir, sources, out_filename="train.tok"):
             with tf.gfile.GFile(filepath, mode="r") as source_file:
                 with tf.gfile.GFile(pp_filepath, mode="a") as out_file:
                     is_zh = lang == "zh"
+                    is_zh = is_zh and use_jieba
                     for line in source_file:
                         line = _preprocess(line.strip(), is_zh)
                         out_file.write(line + "\n")
