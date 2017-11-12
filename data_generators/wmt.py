@@ -136,11 +136,11 @@ class TranslateEnzhWmt(TranslateProblem):
     ## 
     def get_source_vocab(self, data_dir):
         return utils.get_or_generate_vocab(data_dir, self.source_vocab_filename,
-            self.vocab_size, "train.tok.en", _file_byte_budget=5e8, num_iterations=4)
+            self.vocab_size, "train.tok.clean.en", _file_byte_budget=5e8, num_iterations=4)
 
     def get_target_vocab(self, data_dir):
         return utils.get_or_generate_vocab(data_dir, self.target_vocab_filename,
-            self.vocab_size, "train.tok.zh", _file_byte_budget=5e8, num_iterations=4)
+            self.vocab_size, "train.tok.clean.zh", _file_byte_budget=5e8, num_iterations=4)
     
     ##
     ## generators and stuff
@@ -162,7 +162,7 @@ class TranslateEnzhWmt(TranslateProblem):
         tf.logging.info("[generator] vocab sizes, source: %d, target: %d" %
                         (source_vocab.vocab_size, target_vocab.vocab_size))
         
-        data_filename = "train.tok" if train else "dev.tok"   
+        data_filename = "train.tok.clean" if train else "dev.tok"   
         source_filepath = os.path.join(data_dir, data_filename + ".en")
         target_filepath = os.path.join(data_dir, data_filename + ".zh")
         tf.logging.info("[generator] filepaths: %s, %s" % (source_filepath, target_filepath))
@@ -223,6 +223,12 @@ def prepare_wmt_data(data_dir, tmp_dir):
         utils.prepare_data(data_dir, tmp_dir, _UN_TRAIN_DATASETS,
             "train.tok")
 
+        # cleaned dataset, if not available yet
+        train_clean_paths = [os.path.join(data_dir, "train.tok.clean.%s" % lang) for lang in ["en", "zh"]]
+        if not utils.do_files_exist(train_clean_paths):
+            utils.clean_parallel(train_corpus_paths, train_clean_paths, 
+                max_ratio=9.0, min_ratio=0.1111, min_src_len=5)
+
     # prepare dev dataset if it isn't already available
     dev_corpus_paths = [os.path.join(data_dir, "dev.tok.%s" % lang) for lang in ["zh", "en"]]    
     if not utils.do_files_exist(dev_corpus_paths):
@@ -254,15 +260,25 @@ def prepare_wmt_data_addtl_preproc(data_dir, tmp_dir):
         # additional preprocessing is required for nc dataset
         # in addition, we hold out 2000 sentences from this dataset
         # we use this as our dev set
-        tf.logging.info("[prepare_wmt_data] running addtl preprocessing")
+        tf.logging.info("[prepare_wmt_addtl] running addtl preprocessing")
         preprocess.preprocess_nc(data_dir, "nc.train.tok", "train.tok", "dev.tok", 2000)
 
         # append additional training data using cwmt corpuses
-        tf.logging.info("[prepare_wmt_addtl] appending CWMT datasets")
-        utils.prepare_data(data_dir, tmp_dir, _CWMT_TRAIN_DATASETS,
+        tf.logging.info("[prepare_wmt_addtl] appending CWMT A datasets")
+        utils.prepare_data(data_dir, tmp_dir, _CWMT_TRAIN_A_DATASETS,
             "train.tok")
 
+        tf.logging.info("[prepare_wmt_addtl] appending CWMT B datasets")
+        utils.prepare_data(data_dir, tmp_dir, _CWMT_TRAIN_B_DATASETS,
+            "train.tok", use_jieba=False)
+
         # append additional training data using UN parallel corpuses
-        tf.logging.info("[prepare_wmt_data] appending UN parallel datasets")
+        tf.logging.info("[prepare_wmt_addtl] appending UN parallel datasets")
         utils.prepare_data(data_dir, tmp_dir, _UN_TRAIN_DATASETS,
             "train.tok")
+
+        # cleaned dataset, if not available yet
+        train_clean_paths = [os.path.join(data_dir, "train.tok.clean.%s" % lang) for lang in ["en", "zh"]]
+        if not utils.do_files_exist(train_clean_paths):
+            utils.clean_parallel(train_corpus_paths, train_clean_paths, 
+                max_ratio=9.0, min_ratio=0.1111, min_src_len=5)

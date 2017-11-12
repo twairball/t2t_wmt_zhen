@@ -240,3 +240,64 @@ def bi_vocabs_token_generator(source_path,
                         " " * 10, target))
                     source, target = source_file.readline(), target_file.readline()
                     line_num += 1
+
+#
+# experimental preprocessing
+#
+
+def clean_parallel(input_filenames, output_filenames, max_ratio=9.0, min_ratio=0.1111, min_src_len=5):
+    """
+    Removes sentences with < 5 Source words
+    Removes sentences with > 9.0 ratio of Source/Target words (under translated)
+    Removes sentences with < 0.11 ratio of Source/Target words (over translated)
+    Removes duplicate sentences
+    
+    Args:
+        input_filenames: Array or tuple of strings e.g. [source, target] to be read.
+        output_filenames: Array or tuple of strings e.g. [source, target] to write 
+            cleaned dataset
+    """
+    # unpack
+    src, ref = input_filenames
+    src_out, ref_out = output_filenames
+
+    # Set of sentences
+    sents = set()
+
+    with tf.gfile.GFile(src, mode="r") as f_src, tf.gfile.GFile(ref, mode="r") as f_ref:
+        with tf.gfile.GFile(src_out, mode="w") as f_src_out, tf.gfile.GFile(ref_out, mode="w") as f_ref_out:
+            for line_num, (_src, _ref) in enumerate(zip(f_src, f_ref)):
+
+                src_count = len(_src.split())
+                # TODO (jerry): remove whitespace ' '
+                ref_count = len(jieba.lcut(_ref))
+
+                # skip blank lines?
+                if (src_count == 0) or (ref_count ==0):
+                    tf.logging.info("[clean %d] skip blank" % line_num)
+                    continue
+
+                ratio = src_count / float(ref_count)
+
+                # skip short src sentences
+                if src_count < min_src_len:
+                    tf.logging.info("[clean %d] short src sentence: %s" % (line_num, _src))
+                    continue
+                    
+                # skip misaligned translated
+                if (ratio > max_ratio) or (ratio < min_ratio):
+                    tf.logging.info("[clean %d] misaligned, src / ref: %d / %d, ratio=%.2f" % (line_num, src_count, ref_count, ratio))
+                    continue
+
+                # filter duplicates
+                example = (_src, _ref)
+                if example in sents:
+                    tf.logging.info("[clean %d] remove duplicate" % line_num)
+                    continue
+                
+                # sentence is ok, write to file. 
+                sents.add(example)
+                f_src_out.write(_src)
+                f_ref_out.write(_ref)
+    
+    tf.logging.info("[clean]  done, total: %d" % len(sents))
