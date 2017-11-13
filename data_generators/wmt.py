@@ -10,14 +10,16 @@ import tensorflow as tf
 from tensor2tensor.utils import registry
 from tensor2tensor.data_generators import problem
 from tensor2tensor.data_generators import text_encoder
-from tensor2tensor.data_generators.wmt import EOS
-from tensor2tensor.data_generators.wmt import TranslateProblem
+from tensor2tensor.data_generators.translate import TranslateProblem
 
 import random
 import io
 
 from . import utils
 from . import preprocess
+
+# End-of-sentence marker.
+EOS = text_encoder.EOS_ID
 
 # 227k lines
 _ZHEN_TRAIN_DATASETS = [[
