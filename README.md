@@ -36,4 +36,10 @@ Trains using full training dataset (~24MM lines) and uses jieba segmenter for Ch
 
 3. Preprocessed
 
-Trains using full training dataset (~24MM lines), with 2000 lines held out for validation, mirroring UEdin submission for WMT'17. Uses jieba segmenter for Chinese corpus, and performs additional preprocessing to merge blank/skip lines on News Commentary. Builds vocab size 32k. 
+Trains using cleaned dataset (~18MM lines) after preprocessing: 
+- Remove duplicate sentences
+- Remove sentences with source/target word ratio > 9
+- Remove sentences with source/target word ratio < 0.1111
+- Remove short sentences with source length < 5
+
+Uses jieba segmenter for Chinese corpus. Builds vocab size 32k. 
