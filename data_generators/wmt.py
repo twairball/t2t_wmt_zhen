@@ -203,7 +203,7 @@ def prepare_wmt_data(data_dir, tmp_dir):
     This preprocessing uses jieba tokenizer for Chinese corpus 
     """
     # prepare training dataset if it isn't already available
-    train_corpus_paths = [os.path.join(data_dir, "train.tok.%s" % lang) for lang in ["zh", "en"]]
+    train_corpus_paths = [os.path.join(data_dir, "train.tok.%s" % lang) for lang in ["en", "zh"]]
     if not utils.do_files_exist(train_corpus_paths):
         
         # news commentary
