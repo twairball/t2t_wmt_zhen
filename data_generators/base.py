@@ -13,20 +13,39 @@ from tensor2tensor.data_generators import problem
 from tensor2tensor.data_generators import text_encoder
 from tensor2tensor.data_generators import generator_utils
 
-from tensor2tensor.data_generators.wmt import EOS
-from tensor2tensor.data_generators.wmt import TranslateProblem
-from tensor2tensor.data_generators.wmt import _compile_data
-from tensor2tensor.data_generators.wmt import bi_vocabs_token_generator
+from tensor2tensor.data_generators.translate import TranslateProblem
+from tensor2tensor.data_generators.translate import compile_data
+from tensor2tensor.data_generators.translate import bi_vocabs_token_generator
 
 import random
 import io
 
-from . import utils
+# End-of-sentence marker.
+EOS = text_encoder.EOS_ID
 
-from .wmt import _ZHEN_TEST_DATASETS, \
-    _ZHEN_TRAIN_DATASETS, \
-    _UN_TRAIN_DATASETS
+# 227k lines
+_NC_TRAIN_DATASETS = [[
+        "http://data.statmt.org/wmt17/translation-task/training-parallel-nc-v12.tgz",
+        ["training/news-commentary-v12.zh-en.en",
+            "training/news-commentary-v12.zh-en.zh"]]]
 
+# 2000 lines
+_NC_TEST_DATASETS = [[
+    "http://data.statmt.org/wmt17/translation-task/dev.tgz",
+    ("dev/newsdev2017-zhen-ref.en.sgm", "dev/newsdev2017-zhen-src.zh.sgm")
+]]   
+
+# 15,886,041 lines
+_UN_TRAIN_DATASETS = [[
+        "https://s3-us-west-2.amazonaws.com/twairball.wmt17.zh-en/UNv1.0.en-zh.tar.gz",
+        ["en-zh/UNv1.0.en-zh.en",
+            "en-zh/UNv1.0.en-zh.zh"]]]
+
+# casia2015: 1,050,000 lines
+# casict2015: 2,036,833 lines
+# datum2015:  1,000,003 lines
+# datum2017: 1,999,968 lines
+# NEU2017:  2,000,000 lines 
 _CWMT_TRAIN_DATASETS = [
     ["https://s3-us-west-2.amazonaws.com/twairball.wmt17.zh-en/cwmt.tgz",
         ["cwmt/casia2015/casia2015_en.txt",
@@ -103,7 +122,7 @@ _CWMT_TRAIN_DATASETS = [
 ]
 
 # combined training dataset
-_ZHEN_TRAIN_FULL_DATASETS = _ZHEN_TRAIN_DATASETS + \
+_FULL_TRAIN_DATASETS = _NC_TRAIN_DATASETS + \
     _CWMT_TRAIN_DATASETS + \
     _UN_TRAIN_DATASETS
 
@@ -131,18 +150,24 @@ class TranslateEnzhWmtBase(TranslateProblem):
     def target_space_id(self):
         return problem.SpaceID.ZH_TOK
 
+    def get_datasets(self, train):
+        return _FULL_TRAIN_DATASETS if train else _NC_TEST_DATASETS
+
     def generator(self, data_dir, tmp_dir, train):
-        datasets = _ZHEN_TRAIN_FULL_DATASETS if train else _ZHEN_TEST_DATASETS
-        source_datasets = [[item[0], [item[1][0]]] for item in _ZHEN_TRAIN_FULL_DATASETS]
-        target_datasets = [[item[0], [item[1][1]]] for item in _ZHEN_TRAIN_FULL_DATASETS]
+        datasets = self.get_datasets(train)
+
+        # build vocab from training datasets
+        source_datasets = [[item[0], [item[1][0]]] for item in self.get_datasets(train=True)]
+        target_datasets = [[item[0], [item[1][1]]] for item in self.get_datasets(train=True)]
         source_vocab = generator_utils.get_or_generate_vocab(
             data_dir, tmp_dir, self.source_vocab_name, self.targeted_vocab_size,
             source_datasets)
         target_vocab = generator_utils.get_or_generate_vocab(
             data_dir, tmp_dir, self.target_vocab_name, self.targeted_vocab_size,
             target_datasets)
+
         tag = "train" if train else "dev"
-        data_path = _compile_data(tmp_dir, datasets, "wmt_zhen_tok_%s" % tag)
+        data_path = compile_data(tmp_dir, datasets, "wmt_zhen_tok_%s" % tag)
         return bi_vocabs_token_generator(data_path + ".lang1", data_path + ".lang2",
                                             source_vocab, target_vocab, EOS)
 

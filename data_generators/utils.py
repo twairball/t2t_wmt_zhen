@@ -14,10 +14,27 @@ from tensor2tensor.data_generators.generator_utils import maybe_download
 from tensor2tensor.data_generators.generator_utils import gunzip_file
 from tensor2tensor.data_generators.generator_utils import text_encoder
 from tensor2tensor.data_generators import tokenizer
-from tensor2tensor.data_generators.wmt import _preprocess_sgm
 
 import jieba
 jieba.initialize()
+
+# from tensor2tensor
+def _preprocess_sgm(line, is_sgm):
+    """Preprocessing to strip tags in SGM files."""
+    if not is_sgm:
+        return line
+    # In SGM files, remove <srcset ...>, <p>, <doc ...> lines.
+    if line.startswith("<srcset") or line.startswith("</srcset"):
+        return ""
+    if line.startswith("<doc") or line.startswith("</doc"):
+        return ""
+    if line.startswith("<p>") or line.startswith("</p>"):
+        return ""
+    # Strip <seg> tags.
+    line = line.strip()
+    if line.startswith("<seg") and line.endswith("</seg>"):
+        i = line.index(">")
+        return line[i + 1:-6]  # Strip first <seg ...> and last </seg>.
 
 def _get_dataset_filename(dataset):
     return dataset[0][1][0]
