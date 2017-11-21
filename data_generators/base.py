@@ -136,11 +136,11 @@ class TranslateEnzhWmtBase(TranslateProblem):
 
     @property
     def source_vocab_name(self):
-        return "vocab.zhen-zh.%d" % self.targeted_vocab_size
+        return "vocab.zhen-en.%d" % self.targeted_vocab_size
 
     @property
     def target_vocab_name(self):
-        return "vocab.zhen-en.%d" % self.targeted_vocab_size
+        return "vocab.zhen-zh.%d" % self.targeted_vocab_size
 
     @property
     def input_space_id(self):
