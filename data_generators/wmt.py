@@ -225,11 +225,11 @@ def prepare_wmt_data(data_dir, tmp_dir):
         utils.prepare_data(data_dir, tmp_dir, _UN_TRAIN_DATASETS,
             "train.tok")
 
-        # cleaned dataset, if not available yet
-        train_clean_paths = [os.path.join(data_dir, "train.tok.clean.%s" % lang) for lang in ["en", "zh"]]
-        if not utils.do_files_exist(train_clean_paths):
-            utils.clean_parallel(train_corpus_paths, train_clean_paths, 
-                max_ratio=9.0, min_ratio=0.1111, min_src_len=5)
+    # cleaned dataset, if not available yet
+    train_clean_paths = [os.path.join(data_dir, "train.tok.clean.%s" % lang) for lang in ["en", "zh"]]
+    if not utils.do_files_exist(train_clean_paths):
+        utils.clean_parallel(train_corpus_paths, train_clean_paths, 
+            max_ratio=9.0, min_ratio=0.1111, min_src_len=5)
 
     # prepare dev dataset if it isn't already available
     dev_corpus_paths = [os.path.join(data_dir, "dev.tok.%s" % lang) for lang in ["zh", "en"]]    
