@@ -26,13 +26,14 @@ mkdir -p $DECODE_DIR
 if [ ! -f $DECODE_FILE ]; then
     echo "Decode file not found, downloading..."
     mkdir -p $TMP
-    DATASET_URL=http://data.statmt.org/wmt17/translation-task/test.tgz
+    # DATASET_URL=http://data.statmt.org/wmt17/translation-task/test.tgz
+    DATASET_URL=http://data.statmt.org/wmt17/translation-task/test-update-1.tgz
     wget -N $DATASET_URL -P $TMP/
 
     echo "Unarchiving..."
-    tar xvzf $TMP/test.tgz -C $TMP
-    mv $TMP/test/newstest2017-zhen-ref.en.sgm $DECODE_DIR/test.en.sgm
-    mv $TMP/test/newstest2017-zhen-src.zh.sgm $DECODE_DIR/test.zh.sgm
+    tar xvzf $TMP/test-update-1.tgz -C $TMP
+    mv $TMP/newstest2017-enzh-src.en.sgm $DECODE_DIR/test.en.sgm
+    mv $TMP/newstest2017-enzh-ref.zh.sgm $DECODE_DIR/test.zh.sgm
     rm -rf $TMP/test
 
     echo "Preprocessing, removing sgm tags and tokenizing"
@@ -51,22 +52,25 @@ if [ ! -f $DECODED ]; then
     --model=$MODEL \
     --hparams_set=$HPARAMS \
     --output_dir=$TRAIN_DIR \
-    --decode_hparams="beam_size=$BEAM_SIZE,alpha=$ALPHA,use_last_position_only=True" \
+    --decode_hparams="beam_size=$BEAM_SIZE,alpha=$ALPHA" \
     --decode_from_file=$DECODE_FILE
   
   echo "Decoded to ${DECODED}"
 fi
 
 # postprocess
-DECODED_PP=$DECODE_DIR/dev.b$BEAM_SIZE.a$ALPHA.pp.decodes
+DECODED_PP=$DECODE_DIR/test.hyp
 echo "Post-processing, removing spaces: ${DECODED_PP}"
-python $TOOLS/unjieba.py --input $DECODED > $DECODED_PP
+# remove white space
+cat $DECODED | tr -d "[:blank:]" > $DECODED_PP
+# detokenize smartly
+# python $TOOLS/unjieba.py --input $DECODED > $DECODED_PP
 
 # scoring
 SRC_FILE=$DECODE_DIR/test.en # without .sgm
 REF_FILE=$DECODE_DIR/test.zh
 HYP_FILE=$DECODED_PP
-SUBM_NAME=SHMLMU_v3.b$BEAM_SIZE.a$ALPHA  # model name that is shown on submission
+SUBM_NAME=twairball.wmt.b$BEAM_SIZE.a$ALPHA  # model name that is shown on submission
 
 # wrap hypothesis into sgm file
 echo "Wrapping hypothesis into sgm file: ${HYP_FILE}.sgm"
