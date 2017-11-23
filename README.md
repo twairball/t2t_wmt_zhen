@@ -23,7 +23,7 @@ This repo is a collection of experiments on WMT17 English-Chinese translation ta
 
 ````
 
-## Results
+## Experiments
 
 1. Original 
 
@@ -43,3 +43,24 @@ Trains using cleaned dataset (~18MM lines) after preprocessing:
 - Remove short sentences with source length < 5
 
 Uses jieba segmenter for Chinese corpus. Builds vocab size 32k. 
+
+## Results
+
+
+Experiment | Steps | BLEU4 
+-----------|-------|---------
+wmt-pp     | 160k  | 20.13
+
+#### loss
+![loss](results/wmt/loss.png)
+
+#### perplexity
+![loss](results/wmt/ppl.png)
+
+#### accuracy
+![loss](results/wmt/accuracy.png)
+
+#### approx bleu (not accurate)
+![loss](results/wmt/approx_bleu.png)
+
+
