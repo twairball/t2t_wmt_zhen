@@ -49,7 +49,7 @@ Uses jieba segmenter for Chinese corpus. Builds vocab size 32k.
 
 Experiment | Steps | BLEU4 
 -----------|-------|---------
-wmt-pp     | 160k  | 20.13
+wmt-pp     | 240k  | 21.72
 
 #### loss
 ![loss](results/wmt/loss.png)

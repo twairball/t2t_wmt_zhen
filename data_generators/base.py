@@ -32,7 +32,7 @@ _NC_TRAIN_DATASETS = [[
 # 2000 lines
 _NC_TEST_DATASETS = [[
     "http://data.statmt.org/wmt17/translation-task/dev.tgz",
-    ("dev/newsdev2017-zhen-ref.en.sgm", "dev/newsdev2017-zhen-src.zh.sgm")
+    ("dev/newsdev2017-enzh-src.en.sgm", "dev/newsdev2017-enzh-ref.zh.sgm")
 ]]   
 
 # 15,886,041 lines
